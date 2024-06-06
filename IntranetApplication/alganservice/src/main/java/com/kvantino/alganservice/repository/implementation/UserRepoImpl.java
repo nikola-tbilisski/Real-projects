@@ -49,7 +49,7 @@ public class UserRepoImpl implements UserRepository<User> {
             // Send verification URL
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), ACCOUNT.getType());
             // Save URL in verification table
-            jdbc.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("UserId", user.getId(), "url", verificationUrl));
+            jdbc.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "url", verificationUrl));
             // Send email to the user with verification URL
             //emailService.sendVerificationUrl(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT);
             user.setEnabled(false);

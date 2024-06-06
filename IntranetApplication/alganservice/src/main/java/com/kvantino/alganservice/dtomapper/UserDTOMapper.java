@@ -6,9 +6,13 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
 
+import static org.springframework.beans.BeanUtils.*;
+
 public class UserDTOMapper {
     public static UserDTO fromUser(User user) {
         UserDTO userDTO = new UserDTO();
+
+//        copyProperties(user,userDTO);
         try {
             BeanUtils.copyProperties(userDTO, user);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -19,6 +23,8 @@ public class UserDTOMapper {
 
     public static User toUser(UserDTO userDTO) {
         User user = new User();
+
+//        copyProperties(userDTO,user);
         try {
             BeanUtils.copyProperties(user, userDTO);
         } catch (IllegalAccessException | InvocationTargetException e) {

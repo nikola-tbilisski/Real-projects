@@ -115,3 +115,9 @@ create table TwoFactorVerifications
     constraint        UQ_TwoFactorVerifications_User_Id unique (user_id) ,
     constraint        UQ_TwoFactorVerifications_Code unique (code)
 );
+
+INSERT INTO Roles(name, permission)
+VALUES ('ROLE_USER',    'READ:USER,READ:CUSTOMER'),
+       ('ROLE_MANAGER', 'READ:USER,READ:CUSTOMER,UPDATE:USER,UPDATE:CUSTOMER'),
+       ('ROLE_ADMIN',   'READ:USER,READ:CUSTOMER,UPDATE:USER,UPDATE:CUSTOMER,CREATE:USER,CREATE:CUSTOMER'),
+       ('ROLE_SYSADMIN','READ:USER,READ:CUSTOMER,UPDATE:USER,UPDATE:CUSTOMER,CREATE:USER,CREATE:CUSTOMER,DELETE:USER,DELETE:CUSTOMER');
