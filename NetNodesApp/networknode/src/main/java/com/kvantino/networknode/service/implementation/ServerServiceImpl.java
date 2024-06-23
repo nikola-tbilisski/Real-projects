@@ -22,6 +22,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -54,30 +55,32 @@ public class ServerServiceImpl implements ServerService {
     }
 
     @Override
-    public Collection<Integer> scanServerPorts(String ipAddress, int portMaxToScan) {
+    public Collection<Integer> scanServerPorts(String ipAddress, int portMaxToScan) throws IOException {
+        log.info("Scan server ports: {}", ipAddress);
         ConcurrentLinkedQueue<Integer> openPorts = new ConcurrentLinkedQueue<>();
+        Server server = pingServer(ipAddress);
 
-        try (ExecutorService executorService = Executors.newCachedThreadPool()) {
-            AtomicInteger port = new AtomicInteger(0);
-            while (port.get() < portMaxToScan) {
-                final int currentPort = port.getAndIncrement();
-                executorService.submit(() -> {
-                    try (Socket socket = new Socket()) {
-                        socket.connect(new InetSocketAddress(ipAddress, currentPort), 1000);
-                        openPorts.add(currentPort);
-                    } catch (IOException ignored) {
+        if (server.getStatus() == Status.SERVER_UP) {
+            try (ExecutorService executorService = Executors.newCachedThreadPool()) {
+                AtomicInteger port = new AtomicInteger(0);
+                while (port.get() <= portMaxToScan) {
+                    final int currentPort = port.getAndIncrement();
+                    executorService.submit(() -> {
+                        try (Socket socket = new Socket()) {
+                            socket.connect(new InetSocketAddress(server.getIpAddress(), currentPort), 1000);
+                            openPorts.add(currentPort);
+                        } catch (IOException ignored) {}
+                    });
+                }
 
-                    }
-                });
+                executorService.shutdown();
+
+                try {
+                    executorService.awaitTermination(10, TimeUnit.MINUTES);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-
-            executorService.shutdown();
-
-//            try {
-//                executorService.awaitTermination(10, TimeUnit.MINUTES);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
         }
 
         List<Integer> openPortList = new ArrayList<>();

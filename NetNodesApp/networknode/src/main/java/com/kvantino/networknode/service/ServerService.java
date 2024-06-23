@@ -9,7 +9,8 @@ public interface ServerService {
     Server createServer(Server server);
 
     Server pingServer(String ipAddress) throws IOException;
-    Collection<Integer> scanServerPorts(String ipAddress, int portMaxToScan);
+
+    Collection<Integer> scanServerPorts(String ipAddress, int portMaxToScan) throws IOException;
 
     Collection<Server> getServerList(int limit);
 
