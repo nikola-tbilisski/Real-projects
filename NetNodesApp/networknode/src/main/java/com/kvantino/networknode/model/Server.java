@@ -17,17 +17,23 @@ public class Server {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @NotEmpty(message = "IP address can not be empty or null")
     @Column(name = "ip_address", unique = true)
     private String ipAddress;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "memory")
     private String memory;
+
     @Column(name = "type")
     private String type;
+
     @Column(name = "image_url")
     private String imageUrl;
+
     @Column(name = "status")
     private Status status;
 }
