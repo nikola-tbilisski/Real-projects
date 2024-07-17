@@ -38,21 +38,6 @@ public class ServerController {
         );
     }
 
-    @GetMapping("/scan/{ipAddress}")
-    public ResponseEntity<Response> scanServer(@PathVariable String ipAddress) throws IOException {
-        List<Integer> scanList = serverService.scanServerPorts(ipAddress, 65535).stream().toList();
-
-        return ResponseEntity.ok(
-                Response.builder()
-                        .timeStamp(LocalDateTime.now())
-                        .data(Map.of("Open ports", scanList))
-                        .message(scanList.isEmpty() ? "Port scan failed" : "Port scan success")
-                        .status(HttpStatus.OK)
-                        .statusCode(HttpStatus.OK.value())
-                        .build()
-        );
-    }
-
     @GetMapping("/ping/{ipAddress}")
     public ResponseEntity<Response> pingServer(@PathVariable("ipAddress") String ipAddress) throws IOException {
         Server server = serverService.pingServer(ipAddress);
@@ -62,6 +47,21 @@ public class ServerController {
                         .timeStamp(LocalDateTime.now())
                         .data(Map.of("server", server))
                         .message(server.getStatus() == Status.SERVER_UP ? "Ping success" : "Ping failed")
+                        .status(HttpStatus.OK)
+                        .statusCode(HttpStatus.OK.value())
+                        .build()
+        );
+    }
+
+    @GetMapping("/scan/{ipAddress}")
+    public ResponseEntity<Response> scanServer(@PathVariable String ipAddress) throws IOException {
+        List<Integer> scanList = serverService.scanServerPorts(ipAddress, 65535).stream().toList();
+
+        return ResponseEntity.ok(
+                Response.builder()
+                        .timeStamp(LocalDateTime.now())
+                        .data(Map.of("Open ports", scanList))
+                        .message(scanList.isEmpty() ? "Port scan failed" : "Port scan success")
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
                         .build()

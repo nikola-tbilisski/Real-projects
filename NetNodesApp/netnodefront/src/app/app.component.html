@@ -5,7 +5,7 @@
           <div class="table-title">
               <div class="row">
                   <div class="col-sm-6">
-                      <h2>Manage Servers</h2>
+                      <h2>Manage Network Nodes</h2>
                   </div>
                   <div class="col-sm-6">
                       <button (click)="printReport()" type="button" class="btn btn-primary">Print Report</button>
@@ -16,7 +16,7 @@
                       </a>
 
                       <span>
-                          <select (ngModelChange)="filterServers($event)" name="status" ngModel="ALL"  
+                          <select (ngModelChange)="filterServers($event)" name="status" ngModel="ALL"
                               class="btn btn-info" style="height: 32.91px;">
                               <option value="ALL">ALL</option>
                               <option value="SERVER_UP">SERVER UP</option>
@@ -43,6 +43,7 @@
                               <th>Type</th>
                               <th>Status</th>
                               <th>Ping</th>
+                              <th>Scan</th>
                               <th>Actions</th>
                           </tr>
                       </thead>
@@ -54,19 +55,27 @@
                               <td>{{ server.memory }}</td>
                               <td>{{ server.type }}</td>
                               <td>
-                                  <span class="badge" 
+                                  <span class="badge"
                                   [ngClass]="[server.status === Status.SERVER_UP ? ' badge-success' : ' badge-danger']">
-                                    {{ server.status === Status.SERVER_UP ? 'SERVER UP' : 'SERVER DOWN' }}
+                                    {{ server.status === Status.SERVER_UP ? 'NODE UP' : 'NODE DOWN' }}
                                   </span>
                               </td>
                               <td>
                                   <a (click)="pingServer(server.ipAddress)" style="cursor: pointer;">
                                       <i *ngIf="(filterStatus$ | async) === '' || (filterStatus$ | async) !== server.ipAddress"
-                                          class="material-icons" title="Ping server">&#xe328;</i>
+                                          class="material-icons" title="Ping node">&#xe328;</i>
                                       <i *ngIf="(filterStatus$ | async) === server.ipAddress"
                                           class="fa fa-spinner fa-spin" style="font-size:24px"></i>
                                   </a>
                               </td>
+                            <td>
+                              <a (click)="pingServer(server.ipAddress)" style="cursor: pointer;">
+                                <i *ngIf="(filterStatus$ | async) === '' || (filterStatus$ | async) !== server.ipAddress"
+                                   class="material-icons" title="Scan node">&#xe339;</i>
+                                <i *ngIf="(filterStatus$ | async) === server.ipAddress"
+                                   class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                              </a>
+                            </td>
                               <td>
                                   <a (click)="deleteServer(server)" class="delete" data-toggle="modal"
                                       style="cursor: pointer;"><i class="material-icons" data-toggle="tooltip"

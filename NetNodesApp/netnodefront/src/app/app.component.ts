@@ -65,6 +65,26 @@ export class AppComponent implements OnInit {
       );
   }
 
+  scanServer(ipAddress: string): void {
+    this.filterSubject.next(ipAddress);
+    this.appState$ = this.serverService.ping$(ipAddress)
+      .pipe(
+        map(response => {
+          const index = this.dataSubject.value.data.servers.findIndex(server =>  server.id === response.data.server.id);
+          this.dataSubject.value.data.servers[index] = response.data.server;
+          this.notifier.onDefault(response.message);
+          this.filterSubject.next('');
+          return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value };
+        }),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          this.filterSubject.next('');
+          this.notifier.onError(error);
+          return of({ dataState: DataState.ERROR_STATE, error });
+        })
+      );
+  }
+
   saveServer(serverForm: NgForm): void {
     this.isLoading.next(true);
     this.appState$ = this.serverService.save$(serverForm.value as Server)
