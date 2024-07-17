@@ -10,7 +10,6 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import java.time.Duration;
 
 @Configuration
-//@ComponentScan("com.kvantino.WeatherSensorRestApp")
 public class CacheConfig {
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {

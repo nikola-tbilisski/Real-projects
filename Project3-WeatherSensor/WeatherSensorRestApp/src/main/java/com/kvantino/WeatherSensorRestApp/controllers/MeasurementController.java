@@ -38,8 +38,17 @@ public class MeasurementController {
     }
 
     @GetMapping("/rainyDaysCount")
-    public Integer getRainyDaysCount() {
-        return measurementService.findRainyDays();
+    @Cacheable(value = "measurementCache", key = "#raining", sync = true)
+    public Integer getRainyOrNotDaysCount(@RequestParam("raining") boolean raining) {
+        return measurementService.findRainingOrNot(raining);
+    }
+
+    @GetMapping("/grade-less")
+    @Cacheable(value = "measurementCache", key = "#degree", sync = true)
+    public List<MeasurementToSendDTO> getAllEqualOrLessDegree(@RequestParam("degree") double degree) {
+        return measurementService.findAllDaysEqualOrLessOfValue(degree).stream()
+                .map(this::convertModelToDto)
+                .collect(Collectors.toList());
     }
 
     //Get method with direct uri of Sensor name
@@ -51,7 +60,6 @@ public class MeasurementController {
 //    }
 
     //Get method with sensor parameter: ?name=Sensor name!
-
     @GetMapping("/sensor")
     @Cacheable(value = "measurementCache", key = "#name", sync = true)
     public List<MeasurementToSendDTO> showByName(@RequestParam("name") String name) {

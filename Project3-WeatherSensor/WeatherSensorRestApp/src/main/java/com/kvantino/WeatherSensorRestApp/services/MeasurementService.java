@@ -28,8 +28,12 @@ public class MeasurementService {
         return measurementRepository.findAll();
     }
 
-    public Integer findRainyDays() {
-        return measurementRepository.findByRainingIsTrue().size();
+    public Integer findRainingOrNot(boolean value) {
+        return measurementRepository.countRainingTrueOrFalse(value);
+    }
+
+    public List<Measurement> findAllDaysEqualOrLessOfValue(double value) {
+        return measurementRepository.findDaysDegreeLessThenOrEqualToValue(value);
     }
 
     public List<Measurement> findByName(String name) {
