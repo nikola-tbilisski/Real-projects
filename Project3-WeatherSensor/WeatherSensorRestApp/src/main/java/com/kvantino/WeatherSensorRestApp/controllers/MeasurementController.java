@@ -18,7 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/measurements")
@@ -34,7 +33,7 @@ public class MeasurementController {
     public List<MeasurementToSendDTO> getAllMeasurements() {
         return measurementService.findAll().stream()
                 .map(this::convertModelToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @GetMapping("/rainyDaysCount")
@@ -48,7 +47,7 @@ public class MeasurementController {
     public List<MeasurementToSendDTO> getAllEqualOrLessDegree(@RequestParam("degree") double degree) {
         return measurementService.findAllDaysEqualOrLessOfValue(degree).stream()
                 .map(this::convertModelToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     //Get method with direct uri of Sensor name
@@ -65,7 +64,7 @@ public class MeasurementController {
     public List<MeasurementToSendDTO> showByName(@RequestParam("name") String name) {
         return measurementService.findByName(name).stream()
                 .map(this::convertModelToDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @PostMapping("/add")
@@ -90,10 +89,10 @@ public class MeasurementController {
 
         //Convert via ModelMapper & exclude WeatherSensor & map sensorName from WeatherSensorDTO
         // Create a new instance of ModelMapper to ensure a clean configuration
-        ModelMapper InnerModelMapper = new ModelMapper();
+        ModelMapper innerModelMapper = new ModelMapper();
 
         // Create a PropertyMap to customize the mapping
-        InnerModelMapper.addMappings(new PropertyMap<MeasurementDTO, Measurement>() {
+        innerModelMapper.addMappings(new PropertyMap<MeasurementDTO, Measurement>() {
             @Override
             protected void configure() {
                 // Map sensorName from measurementDTO weatherSensor manually & skip weatherSensor from mapping
@@ -102,7 +101,7 @@ public class MeasurementController {
             }
         });
 
-        return InnerModelMapper.map(measurementDTO, Measurement.class);
+        return innerModelMapper.map(measurementDTO, Measurement.class);
     }
 
     private MeasurementToSendDTO convertModelToDto(Measurement measurement) {

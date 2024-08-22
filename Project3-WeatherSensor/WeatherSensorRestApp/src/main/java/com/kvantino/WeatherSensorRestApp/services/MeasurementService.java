@@ -55,6 +55,5 @@ public class MeasurementService {
     private void enrichMeasurement(Measurement measurement) {
         measurement.setMeasurementDate(LocalDateTime.now());
         measurement.setWeatherSensor(weatherSensorRepository.findByName(measurement.getSensorName()).orElse(null));
-        //System.out.println(measurement.getSensorName());
     }
 }

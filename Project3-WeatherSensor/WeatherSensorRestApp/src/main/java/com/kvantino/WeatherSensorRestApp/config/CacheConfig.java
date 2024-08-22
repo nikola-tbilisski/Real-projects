@@ -24,7 +24,7 @@ public class CacheConfig {
 
     @Bean
     public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
-        return (builder) -> builder
+        return builder -> builder
                 .withCacheConfiguration("measurementCache",
                         RedisCacheConfiguration
                                 .defaultCacheConfig()

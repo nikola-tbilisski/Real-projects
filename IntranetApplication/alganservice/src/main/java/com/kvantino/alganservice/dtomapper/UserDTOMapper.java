@@ -6,9 +6,10 @@ import org.apache.commons.beanutils.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
 
-import static org.springframework.beans.BeanUtils.*;
-
 public class UserDTOMapper {
+    private UserDTOMapper() {
+    }
+
     public static UserDTO fromUser(User user) {
         UserDTO userDTO = new UserDTO();
 

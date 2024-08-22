@@ -23,6 +23,7 @@ import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 @RequiredArgsConstructor
 @RequestMapping("/server")
 public class ServerController {
+    public static final String SERVER = "server";
     private final ServerServiceImpl serverService;
 
     @GetMapping("/list")
@@ -45,7 +46,7 @@ public class ServerController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timeStamp(LocalDateTime.now())
-                        .data(Map.of("server", server))
+                        .data(Map.of(SERVER, server))
                         .message(server.getStatus() == Status.SERVER_UP ? "Ping success" : "Ping failed")
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())
@@ -74,7 +75,7 @@ public class ServerController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timeStamp(LocalDateTime.now())
-                        .data(Map.of("server", serverService.createServer(server)))
+                        .data(Map.of(SERVER, serverService.createServer(server)))
                         .message("Server created")
                         .status(HttpStatus.CREATED)
                         .statusCode(HttpStatus.CREATED.value())
@@ -88,7 +89,7 @@ public class ServerController {
         return ResponseEntity.ok(
                 Response.builder()
                         .timeStamp(LocalDateTime.now())
-                        .data(Map.of("server", serverService.getServerById(id)))
+                        .data(Map.of(SERVER, serverService.getServerById(id)))
                         .message("Server retrieved")
                         .status(HttpStatus.OK)
                         .statusCode(HttpStatus.OK.value())

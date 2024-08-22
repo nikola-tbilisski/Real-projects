@@ -1,5 +1,6 @@
 package com.kvantino.WeatherSensorRestApp.util;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.validation.BindingResult;
@@ -9,14 +10,10 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class ErrorResponse {
     private String message;
     private long timestamp;
-
-    public ErrorResponse(String message, long timestamp) {
-        this.message = message;
-        this.timestamp = timestamp;
-    }
 
     public static void reportErrors(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

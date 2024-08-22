@@ -33,6 +33,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ServerServiceImpl implements ServerService {
     private final ServerRepo serverRepo;
 
+    private Random random = new Random();
+
     @Override
     @Transactional
     public Server createServer(Server server) {
@@ -58,7 +60,10 @@ public class ServerServiceImpl implements ServerService {
     public Collection<Integer> scanServerPorts(String ipAddress, int portMaxToScan) throws IOException {
         log.info("Scan server ports: {}", ipAddress);
         ConcurrentLinkedQueue<Integer> openPorts = new ConcurrentLinkedQueue<>();
-        Server server = pingServer(ipAddress);
+
+        Server server = serverRepo.findByIpAddress(ipAddress);
+        InetAddress address = InetAddress.getByName(ipAddress);
+        server.setStatus(address.isReachable(10000) ? Status.SERVER_UP : Status.SERVER_DOWN);
 
         if (server.getStatus() == Status.SERVER_UP) {
             try (ExecutorService executorService = Executors.newCachedThreadPool()) {
@@ -128,7 +133,7 @@ public class ServerServiceImpl implements ServerService {
         String[] imageNames = {"server1.png", "server2.png", "server3.png", "server4.png"};
 
         return ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/server/image/" + imageNames[new Random().nextInt(4)])
+                .path("/server/image/" + imageNames[this.random.nextInt(4)])
                 .toUriString();
     }
 }

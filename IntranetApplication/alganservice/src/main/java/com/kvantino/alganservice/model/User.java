@@ -19,22 +19,35 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @JsonInclude(NON_DEFAULT)
 public class User {
     private Long id;
+
     @NotEmpty(message = "First Name cannot be empty")
     private String firstName;
+
     @NotEmpty(message = "last Name cannot be empty")
     private String lastName;
+
     @NotEmpty(message = "Email cannot be empty")
     @Email(message = "Invalid email. Please enter valid email address")
     private String email;
+
     @NotEmpty(message = "Password Name cannot be empty")
     private String password;
+
     private String address;
+
     private String phone;
+
     private String title;
+
     private String bio;
+
     private String imageUrl;
+
     private boolean enabled;
+
     private boolean isNotLocked;
+
     private boolean isUsingMfa;
+
     private LocalDateTime createdAt;
 }
