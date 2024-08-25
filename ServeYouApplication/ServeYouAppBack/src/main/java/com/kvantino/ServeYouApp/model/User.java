@@ -14,23 +14,31 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@NoArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    private String email;
+    @Column(name = "first_name")
+    private String firstName;
 
-    private String password;
+    @Column(name = "last_name")
+    private String lastName;
 
-    private String name;
-
-    private String lastname;
-
+    @Column(name = "phone_number")
     private String phoneNumber;
 
-    private UserRole role;
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "user_role")
+    private UserRole userRole;
 
     @Override
     public final boolean equals(Object o) {
