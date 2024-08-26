@@ -1,8 +1,11 @@
 package com.kvantino.ServeYouApp.dto;
 
-import lombok.Data;
+import com.kvantino.ServeYouApp.enums.UserRole;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class SignUpRequestDto {
     private Long id;
 
@@ -15,4 +18,6 @@ public class SignUpRequestDto {
     private String lastname;
 
     private String phoneNumber;
+
+    private UserRole userRole;
 }
