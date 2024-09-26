@@ -6,4 +6,10 @@ create table users(
     email varchar(50) not null ,
     password varchar(255) ,
     user_role varchar(50)
-)
+);
+
+insert into users(first_name, last_name, phone_number, email, password, user_role)
+values ('nikola', 'kvantino', '555 442 235', 'kvan@gmail.com', 'zohra', 'CLIENT');
+insert into users(first_name, last_name, phone_number, email, password, user_role)
+values ('Algan', 'AlganServ', '555 333 222', 'algan@gmail.com', 'prodha', 'COMPANY')
+
