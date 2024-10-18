@@ -1,5 +1,7 @@
 package com.kvantino.book.user;
 
+import com.kvantino.book.book.Book;
+import com.kvantino.book.history.BookTransactionHistory;
 import com.kvantino.book.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +17,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -28,33 +29,46 @@ import java.util.stream.Collectors;
 public class User implements UserDetails, Principal {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue
     private Long id;
 
+    @Column(name = "firstname")
     private String firstname;
 
+    @Column(name = "lastname")
     private String lastname;
 
+    @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(unique = true)
+    @Column(name = "email", unique = true)
     private String email;
 
+    @Column(name = "password")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+
+    @OneToMany(mappedBy = "user")
+    private List<BookTransactionHistory> bookTransactionHistories;
+
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
     @LastModifiedDate
-    @Column(insertable = false)
+    @Column(name = "last_modified_date", insertable = false)
     private LocalDateTime lastModifiedDate;
 
+    @Column(name = "account_locked")
     private boolean accountLocked;
 
+    @Column(name = "enabled")
     private boolean enabled;
 
 
@@ -68,7 +82,7 @@ public class User implements UserDetails, Principal {
         return this.roles
                 .stream()
                 .map(r -> new SimpleGrantedAuthority(r.getName()))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

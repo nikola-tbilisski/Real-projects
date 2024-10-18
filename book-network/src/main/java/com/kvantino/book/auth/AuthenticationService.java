@@ -16,7 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -75,7 +74,7 @@ public class AuthenticationService {
         // generate a token
         String generatedToken = generateActivationCode(6);
         var token = Token.builder()
-                .token(generatedToken)
+                .userToken(generatedToken)
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusMinutes(15))
                 .user(user)
@@ -110,13 +109,13 @@ public class AuthenticationService {
     }
 
     public void activateAccount(String token) throws MessagingException {
-        Token savedToken = tokenRepository.findByToken(token)
+        Token savedToken = tokenRepository.findByUserToken(token)
                 // to do, exception has to be refactored
                 .orElseThrow(() -> new RuntimeException("Invalid token"));
 
         if(LocalDateTime.now().isAfter(savedToken.getExpiresAt())) {
             sendValidationEmail(savedToken.getUser());
-            throw new RuntimeException("Activation token is expired. A new token has been sent to the user.");
+            throw new MessagingException("Activation token is expired. A new token has been sent to the user.");
         }
         var user = userRepository.findById(Math.toIntExact(savedToken.getUser().getId()))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));

@@ -11,19 +11,28 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "token")
 public class Token {
 
     @Id
+    @Column(name = "id")
     @GeneratedValue
     private Integer id;
 
-    private String token;
+    @Column(name = "token")
+    private String userToken;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(name = "expires_at")
     private LocalDateTime expiresAt;
+
+    @Column(name = "validated_at")
     private LocalDateTime validatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
 }
