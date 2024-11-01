@@ -228,7 +228,7 @@ public class BookService {
 
         User user = ((User) connectedUser.getPrincipal());
 
-        var bookCover = fileStorageService.saveFile(file, book, user.getId());
+        var bookCover = fileStorageService.saveFile(file, user.getId());
         book.setBookCover(bookCover);
         bookRepository.save(book);
     }

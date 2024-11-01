@@ -43,7 +43,7 @@ public interface BookTransactionHistoryRepo extends JpaRepository<BookTransactio
     Optional<BookTransactionHistory> findByBookIdAndUserId(Integer bookId, Long userId);
 
     @Query("""
-                SELECT transaction
+                        SELECT transaction
                         FROM BookTransactionHistory transaction
                         WHERE transaction.book.owner.id = :ownerId
                         AND transaction.book.id = :bookId

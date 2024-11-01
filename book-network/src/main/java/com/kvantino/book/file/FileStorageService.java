@@ -1,7 +1,5 @@
 package com.kvantino.book.file;
 
-import com.kvantino.book.book.Book;
-import com.kvantino.book.book.BookService;
 import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +8,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static java.io.File.separator;
 
@@ -18,23 +20,19 @@ import static java.io.File.separator;
 @RequiredArgsConstructor
 public class FileStorageService {
 
-    private final BookService bookService;
     @Value("${application.file.upload.photos-output-path}")
     private String fileUploadPath;
 
-    public String saveFile(
-            @Nonnull MultipartFile sourceFile,
-            @Nonnull Book book,
-            @Nonnull Long userId) {
+    public String saveFile(@Nonnull MultipartFile sourceFile,
+                           @Nonnull Long userId) {
 
         final String fileUploadSubPath = "user" + separator + userId;
 
         return uploadFile(sourceFile, fileUploadSubPath);
     }
 
-    private String uploadFile(
-            @Nonnull MultipartFile sourceFile,
-            @Nonnull String fileUploadSubPath) {
+    private String uploadFile(@Nonnull MultipartFile sourceFile,
+                              @Nonnull String fileUploadSubPath) {
 
         final String finalUploadPath = fileUploadPath + separator + fileUploadSubPath;
         File targetFolder = new File(finalUploadPath);
@@ -46,7 +44,31 @@ public class FileStorageService {
                 return null;
             }
         }
+        final String fileExtension = getFileExtension(sourceFile.getOriginalFilename());
 
-        return null;
+        //Example of file path and the name of targetFilePath: ./upload/users/1/7334802365.jpg
+        String targetFilePath = finalUploadPath + separator + System.currentTimeMillis() + "." + fileExtension;
+        Path targetPath = Paths.get(targetFilePath);
+
+        try {
+            Files.write(targetPath, sourceFile.getBytes());
+            log.info("File saved successfully to: {}", targetFilePath);
+            //return targetFilePath;
+        } catch (IOException e) {
+            log.error("File wasn't saved", e);
+        }
+
+        return targetFilePath;
+    }
+
+    private String getFileExtension(String originalFilename) {
+        if (originalFilename == null || originalFilename.isEmpty())
+            return "";
+
+        int lastDotIndex = originalFilename.lastIndexOf(".");
+        if (lastDotIndex == -1)
+            return "";
+
+        return originalFilename.substring(lastDotIndex + 1).toLowerCase();
     }
 }
