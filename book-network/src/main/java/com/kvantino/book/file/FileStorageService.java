@@ -46,7 +46,7 @@ public class FileStorageService {
         }
         final String fileExtension = getFileExtension(sourceFile.getOriginalFilename());
 
-        //Example of file path and the name of targetFilePath: ./upload/users/1/7334802365.jpg
+        //Example of file path and the name of targetFilePath: ./uploads/user/1/7334802365.jpg
         String targetFilePath = finalUploadPath + separator + System.currentTimeMillis() + "." + fileExtension;
         Path targetPath = Paths.get(targetFilePath);
 

@@ -1,0 +1,11 @@
+li > a {
+  &:hover {
+    background-color: #d6e5f1;
+    border-radius: 5px;
+    color: #007bff;
+  }
+  &.active {
+    color: #0066ff;
+    border-radius: 5px;
+  }
+}
