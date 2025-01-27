@@ -17,27 +17,29 @@ spring:
   #    database: postgresql
 #    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-#  mail:
-#    host: localhost
-#    port: 1025
-#    username: nikola
-#    password: kvantino
-#    properties:
-#      mail:
-#        smtp:
-#          trust: "*"
-#        auth: true
-#        starttls:
-#          enabled: true
-#        connectiontimeout: 5000
-#        timeout: 3000
-#        writetimeout: 5000
+  mail:
+    host: localhost
+    port: 1025
+    username: nikola
+    password: kvantino
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enabled: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
 
 application:
   security:
     jwt:
       secret-key: 5f2a667ebaa2673578aaf843d268d82ac59941c4fa9368691e3532a8905f5d9b
-      expiration: 86400000 # one day
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # a week
 
   mailing:
     frontend:

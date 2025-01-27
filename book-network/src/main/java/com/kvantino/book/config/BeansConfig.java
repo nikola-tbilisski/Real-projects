@@ -38,25 +38,25 @@ public class BeansConfig {
         return authProvider;
     }
 
-    @Bean
-    public JavaMailSender getJavaMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("localhost");
-        mailSender.setPort(1025);
-
-        mailSender.setUsername("nikola");
-        mailSender.setPassword("kvantino");
-
-        Properties props = mailSender.getJavaMailProperties();
-        props.put("mail.properties.mail.smtp.trust", "*");
-        props.put("mail.properties.mail.auth", true);
-        props.put("mail.properties.mail.starttls.enabled", true);
-        props.put("mail.properties.mail.connectiontimeout", 5000);
-        props.put("mail.properties.mail.timeout", 3000);
-        props.put("mail.properties.writetimeout", 5000);
-
-        return mailSender;
-    }
+//    @Bean
+//    public JavaMailSender getJavaMailSender() {
+//        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//        mailSender.setHost("localhost");
+//        mailSender.setPort(1025);
+//
+//        mailSender.setUsername("nikola");
+//        mailSender.setPassword("kvantino");
+//
+//        Properties props = mailSender.getJavaMailProperties();
+//        props.put("mail.properties.mail.smtp.trust", "*");
+//        props.put("mail.properties.mail.auth", true);
+//        props.put("mail.properties.mail.starttls.enabled", true);
+//        props.put("mail.properties.mail.connectiontimeout", 5000);
+//        props.put("mail.properties.mail.timeout", 3000);
+//        props.put("mail.properties.writetimeout", 5000);
+//
+//        return mailSender;
+//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
