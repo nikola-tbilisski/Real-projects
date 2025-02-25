@@ -42,7 +42,7 @@
         <input class="form-control" type="text" placeholder="Find a book" aria-label="Search">
         <button class="btn btn-outline-success" type="submit"><i class="fas fa-search"></i></button>
         <span>Welcome</span>
-        <span class="text-capitalize fw-bold">Nikola</span>
+        <span class="text-capitalize fw-bold">{{ userDisplayName }}</span>
         <button class="btn btn-link" type="button" (click)="logout()"><i class="fas fa-door-open"></i></button>
       </form>
     </div>

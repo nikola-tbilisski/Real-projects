@@ -5,16 +5,20 @@ import {Component, OnInit} from '@angular/core';
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss']
 })
-export class MenuComponent implements OnInit{
+export class MenuComponent implements OnInit {
+  userDisplayName: string = '';
 
   logout() {
-
+    localStorage.removeItem('token');
+    window.location.reload();
   }
 
   ngOnInit(): void {
+    // @ts-ignore
+    this.userDisplayName = localStorage.getItem('loggedUser');
     const linkColor = document.querySelectorAll('.nav-link');
     linkColor.forEach(link => {
-      if(window.location.href.endsWith(link.getAttribute('href') || '')) {
+      if (window.location.href.endsWith(link.getAttribute('href') || '')) {
         link.classList.add('active')
       }
       link.addEventListener('click', () => {

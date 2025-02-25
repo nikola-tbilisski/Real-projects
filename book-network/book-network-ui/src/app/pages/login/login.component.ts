@@ -13,6 +13,7 @@ export class LoginComponent {
 
   authRequest: AuthenticationRequest = {email: '', password: ''};
   errorMsg: Array<string> = [];
+  private userName: string = '';
 
   constructor(
     private router: Router,
@@ -28,6 +29,8 @@ export class LoginComponent {
     }).subscribe({
       next: (res) => {
         this.tokenService.token = res.token as string;
+        this.userName = this.authRequest.email;
+        localStorage.setItem('loggedUser', this.userName.substring(0, this.userName.indexOf('@')));
         this.router.navigate(['books'])
       },
       error: (err) => {
