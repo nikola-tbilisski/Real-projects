@@ -14,8 +14,8 @@ spring:
       hibernate:
       format_sql: true
     open-in-view: true
-  #    database: postgresql
-#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
     host: localhost
