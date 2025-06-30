@@ -15,9 +15,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -32,8 +31,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class ServerServiceImpl implements ServerService {
     private final ServerRepo serverRepo;
-
-    private Random random = new Random();
+    private final Random random = new Random();
+    private static final int SERVER_REACHABLE_TIMEOUT = 10000;
+    private static final int SOCKET_CONNECT_TIMEOUT = 1000;
+    private static final int EXECUTOR_SERVICE_AWAIT_TERMINATION = 10;
 
     @Override
     @Transactional
@@ -58,43 +59,42 @@ public class ServerServiceImpl implements ServerService {
 
     @Override
     public Collection<Integer> scanServerPorts(String ipAddress, int portMaxToScan) throws IOException {
-        log.info("Scan server ports: {}", ipAddress);
-        ConcurrentLinkedQueue<Integer> openPorts = new ConcurrentLinkedQueue<>();
+        log.info("Scanning server ports: {}", ipAddress);
 
         Server server = serverRepo.findByIpAddress(ipAddress);
         InetAddress address = InetAddress.getByName(ipAddress);
-        server.setStatus(address.isReachable(10000) ? Status.SERVER_UP : Status.SERVER_DOWN);
+        server.setStatus(address.isReachable(SERVER_REACHABLE_TIMEOUT) ? Status.SERVER_UP : Status.SERVER_DOWN);
 
-        if (server.getStatus() == Status.SERVER_UP) {
-            try (ExecutorService executorService = Executors.newCachedThreadPool()) {
-                AtomicInteger port = new AtomicInteger(0);
-                while (port.get() <= portMaxToScan) {
-                    final int currentPort = port.getAndIncrement();
-                    executorService.submit(() -> {
-                        try (Socket socket = new Socket()) {
-                            socket.connect(new InetSocketAddress(server.getIpAddress(), currentPort), 1000);
-                            openPorts.add(currentPort);
-                        } catch (IOException ignored) {}
-                    });
-                }
+        if (server.getStatus() != Status.SERVER_UP) {
+            return Collections.emptyList();
+        }
 
-                executorService.shutdown();
+        ConcurrentLinkedQueue<Integer> openPorts = new ConcurrentLinkedQueue<>();
+        try (ExecutorService executorService = Executors.newCachedThreadPool()) {
+            AtomicInteger port = new AtomicInteger(0);
+            while (port.get() <= portMaxToScan) {
+                scanOpenPorts(port, server, openPorts, executorService);
+            }
+            executorService.shutdown();
 
-                try {
-                    executorService.awaitTermination(10, TimeUnit.MINUTES);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+            try {
+                executorService.awaitTermination(EXECUTOR_SERVICE_AWAIT_TERMINATION, TimeUnit.MINUTES);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
+        return openPorts;
+    }
 
-        List<Integer> openPortList = new ArrayList<>();
-
-        while (!openPorts.isEmpty()) {
-            openPortList.add(openPorts.poll());
-        }
-
-        return openPortList;
+    private void scanOpenPorts(AtomicInteger portCounter, Server server, ConcurrentLinkedQueue<Integer> openPorts, ExecutorService executorService) {
+        final int currentPort = portCounter.getAndIncrement();
+        executorService.submit(() -> {
+            try (Socket socket = new Socket()) {
+                socket.connect(new InetSocketAddress(server.getIpAddress(), currentPort), SOCKET_CONNECT_TIMEOUT);
+                openPorts.add(currentPort);
+            } catch (IOException ignored) {
+            }
+        });
     }
 
     @Override

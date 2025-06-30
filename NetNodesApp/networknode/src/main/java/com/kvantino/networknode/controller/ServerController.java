@@ -55,7 +55,7 @@ public class ServerController {
     }
 
     @GetMapping("/scan/{ipAddress}")
-    public ResponseEntity<Response> scanServer(@PathVariable String ipAddress) throws IOException {
+    public ResponseEntity<Response> scanServer(@PathVariable("ipAddress") String ipAddress) throws IOException {
         List<Integer> scanList = serverService.scanServerPorts(ipAddress, 65535).stream().toList();
 
         return ResponseEntity.ok(
