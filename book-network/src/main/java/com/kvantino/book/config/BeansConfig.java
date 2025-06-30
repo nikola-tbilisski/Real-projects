@@ -41,7 +41,7 @@ public class BeansConfig {
 //    @Bean
 //    public JavaMailSender getJavaMailSender() {
 //        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-//        mailSender.setHost("localhost");
+//        mailSender.setHost("mail-dev");
 //        mailSender.setPort(1025);
 //
 //        mailSender.setUsername("nikola");

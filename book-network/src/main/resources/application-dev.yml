@@ -18,7 +18,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
   mail:
-    host: localhost
+    host: mail-dev
     port: 1025
     username: nikola
     password: kvantino
@@ -28,10 +28,11 @@ spring:
           trust: "*"
         auth: true
         starttls:
-          enabled: true
+          enabled: false
         connectiontimeout: 5000
         timeout: 3000
         writetimeout: 5000
+
 
 application:
   security:

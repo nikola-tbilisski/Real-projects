@@ -27,20 +27,23 @@ services:
     container_name: book-network-app
     depends_on:
       - postgres
+      - mail-dev
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/book_social_network
 #      - SPRING_DATASOURCE_USERNAME= postgres
 #      - SPRING_DATASOURCE_PASSWORD= kvantino
-      - SPRING_JPA_HIBERNATE_DDL_AUTO= update
+      - SPRING_MAIL_HOST=mail-dev
+      - SPRING_MAIL_PORT=1025
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
-#  bn-ui:
-#    build:
-#      context: ./book-network-ui
-#    container_name: book-network-ui
-#    ports:
-#      - 4200:4200
-#    depends_on:
-#      - bn-app
+  bn-ui:
+    build:
+      context: ./book-network-ui
+    container_name: book-network-ui
+    ports:
+      - 4200:80
+    depends_on:
+      - bn-app
 
   mail-dev:
     container_name: mail-dev-bsn
@@ -48,15 +51,16 @@ services:
     ports:
       - 1080:1080
       - 1025:1025
-
+    networks:
+      - bn-net
 
 networks:
   bn-net:
     driver: bridge
 
-volumes:
-  postgres:
-    driver: local
+#volumes:
+#  postgres:
+#    driver: local
 
 
 
