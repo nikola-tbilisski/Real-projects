@@ -29,9 +29,10 @@ export class AppComponent implements OnInit {
   isLoading$ = this.isLoading.asObservable();
   scanResults: number[] = [];
   scanIpAddress = '';
-  isScanning = new BehaviorSubject<boolean>(false);
-  isScanning$ = this.isScanning.asObservable();
-
+  // Track scanning state per server IP
+  private scanningServers = new Map<string, boolean>();
+  private scanningSubject = new BehaviorSubject<Map<string, boolean>>(new Map());
+  scanningState$ = this.scanningSubject.asObservable();
 
   constructor(private serverService: ServerService, private notifier: NotificationService, public dialog: MatDialog) { }
 
@@ -49,6 +50,11 @@ export class AppComponent implements OnInit {
           return of({ dataState: DataState.ERROR_STATE, error });
         })
       );
+  }
+
+  // Helper method to check if a specific server is being scanned
+  isServerScanning(ipAddress: string): boolean {
+    return this.scanningServers.get(ipAddress) || false;
   }
 
   pingServer(ipAddress: string): void {
@@ -72,7 +78,10 @@ export class AppComponent implements OnInit {
   }
 
   scanServer(ipAddress: string): void {
-    this.isScanning.next(true);
+    // Set scanning state for this specific server
+    this.scanningServers.set(ipAddress, true);
+    this.scanningSubject.next(new Map(this.scanningServers));
+    
     this.serverService.scan$(ipAddress).subscribe({
       next: (response) => {
         this.dialog.open(PortScanResultsComponent, {
@@ -81,10 +90,14 @@ export class AppComponent implements OnInit {
             ports: response.data['Open ports'] || []
           }
         });
-        this.isScanning.next(false);
+        // Clear scanning state for this specific server
+        this.scanningServers.set(ipAddress, false);
+        this.scanningSubject.next(new Map(this.scanningServers));
       },
       error: (error) => {
-        this.isScanning.next(false);
+        // Clear scanning state for this specific server
+        this.scanningServers.set(ipAddress, false);
+        this.scanningSubject.next(new Map(this.scanningServers));
         this.notifier.onError(error);
       }
     });

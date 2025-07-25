@@ -70,8 +70,8 @@
                               </td>
                             <td>
                               <a (click)="scanServer(server.ipAddress)" style="cursor: pointer;">
-                                <i *ngIf="!(isScanning$ | async)" class="material-icons" title="Scan server">&#xe326;</i>
-                                <i *ngIf="isScanning$ | async" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                                <i *ngIf="!isServerScanning(server.ipAddress)" class="material-icons" title="Scan server">&#xe326;</i>
+                                <i *ngIf="isServerScanning(server.ipAddress)" class="fa fa-spinner fa-spin" style="font-size:24px"></i>
                               </a>
                             </td>
                               <td>
