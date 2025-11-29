@@ -14,6 +14,7 @@ public class ChatMapper {
                 .isRecipientOnLine(chat.getRecipient().isUserOnline())
                 .senderId(chat.getSender().getId())
                 .receiverId(chat.getRecipient().getId())
+                .lastMessageTime(chat.getLastMessageTime())
                 .build();
     }
 }
