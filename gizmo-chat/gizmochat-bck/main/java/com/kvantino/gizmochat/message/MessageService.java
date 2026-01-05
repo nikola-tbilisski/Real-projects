@@ -46,7 +46,7 @@ public class MessageService {
                 .senderId(messageRequest.getSenderId())
                 .receiverId(messageRequest.getReceiverId())
                 .type(NotificationType.MESSAGE)
-                .chatName(chat.getChatName(message.getSenderId()))
+                .chatName(chat.getTargetChatName(message.getSenderId()))
                 .build();
 
         notificationService.sendNotification(message.getReceiverId(), notification);
@@ -88,15 +88,15 @@ public class MessageService {
         message.setChat(chat);
         message.setSenderId(senderId);
         message.setReceiverId(recipientId);
-        message.setType(MessageType.IMAGE);
+        message.setType(getMediaType(file));
         message.setState(MessageState.SENT);
         message.setMediaFilePath(filePath);
         messageRepository.save(message);
 
         Notification notification = Notification.builder()
                 .chatId(chat.getId())
-                .type(NotificationType.IMAGE)
-                .messageType(MessageType.IMAGE)
+                .type(NotificationType.valueOf(message.getType().toString()))
+                .messageType(message.getType())
                 .senderId(senderId)
                 .receiverId(recipientId)
                 .media(FileUtils.readFileFromLocation(filePath))
@@ -122,5 +122,17 @@ public class MessageService {
             return chat.getRecipient().getId();
         }
         return chat.getSender().getId();
+    }
+
+    private MessageType getMediaType(MultipartFile file) {
+        final String fileExtension = fileService.getFileExtension(file.getOriginalFilename());
+
+        return switch (fileExtension) {
+            case "jpg", "jpeg", "png", "svg", "gif" -> MessageType.IMAGE;
+            case "mp3", "wav", "wma" -> MessageType.AUDIO;
+            case "mp4", "avi", "mpg", "mov" -> MessageType.VIDEO;
+            case "pdf" -> MessageType.DOCUMENT;
+            default -> MessageType.UNKNOWN;
+        };
     }
 }

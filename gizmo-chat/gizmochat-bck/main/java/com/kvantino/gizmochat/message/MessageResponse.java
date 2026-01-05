@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MessageResponse {
+public class
+MessageResponse {
 
     private Long id;
     private String content;

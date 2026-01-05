@@ -13,10 +13,7 @@
     </div>
     <div class="d-flex w-100">
       <div class="col-3 overflow-x-scroll">
-        <app-chat-list
-          [chats]="chats"
-          (chatSelected)="chatSelected($event)"
-        ></app-chat-list>
+        <app-chat-list [chats]="chats" (chatSelected)="chatSelected($event)"></app-chat-list>
       </div>
       @if (selectedChat.id) {
         <div class="col-9">
@@ -50,21 +47,47 @@
                     <div class="d-flex flex-column">
                       @if (message.type === 'TEXT') {
                         <span>{{ message.content }}</span>
-                      } @else if (message.media) {
-                        <img width="200" class="cursor-pointer" [src]=" 'data:image/jpg;base64,' + message.media "
-                             alt="">
+                      } @else if (message.media && message.media.length > 0) {
+                        @switch (message.type) {
+                          @case ('IMAGE') {
+                            <img width="200" class="cursor-pointer rounded" [src]="getMediaDataUrl(message)" alt="Image"
+                                 style="max-width: 300px;">
+                          }
+                          @case ('VIDEO') {
+                            <video width="300" controls class="cursor-pointer rounded" style="max-width: 400px;">
+                              <source [src]="getMediaDataUrl(message)" type="video/mp4">
+                              Your browser does not support the video tag.
+                            </video>
+                          }
+                          @case ('AUDIO') {
+                            <div class="p-2 bg-white rounded">
+                              <audio controls class="cursor-pointer" style="width: 250px;">
+                                <source [src]="getMediaDataUrl(message)" type="audio/mpeg">
+                                Your browser does not support the audio tag.
+                              </audio>
+                            </div>
+                          }
+                          @case ('DOCUMENT') {
+                            <a [href]="getMediaDataUrl(message)" download="document.pdf"
+                               class="btn btn-sm btn-outline-primary d-flex align-items-center gap-2"
+                               style="width: fit-content;">
+                              <i class="fas fa-file-pdf"></i>
+                              <span>Download PDF</span>
+                            </a>
+                          }
+                        }
                       }
                       <small class="text-black-50">
                         {{ message.createdDate | date: 'HH:mm' }}
                         @if (message.state === 'SENT') {
                           <span>
-                          <i class="fas fa-check"></i>
-                        </span>
+                    <i class="fas fa-check"></i>
+                  </span>
                         } @else {
                           <span>
-                          <i class="fas fa-check seen"></i>
-                          <i class="fas fa-check seen ml-neg"></i>
-                        </span>
+                    <i class="fas fa-check seen"></i>
+                    <i class="fas fa-check seen ml-neg"></i>
+                  </span>
                         }
                       </small>
                     </div>
@@ -74,9 +97,35 @@
                     <div class="d-flex flex-column align-items-end">
                       @if (message.type === 'TEXT') {
                         <span>{{ message.content }}</span>
-                      } @else if (message.media) {
-                        <img width="200" class="cursor-pointer" [src]=" 'data:image/jpg;base64,' + message.media "
-                             alt="">
+                      } @else if (message.media && message.media.length > 0) {
+                        @switch (message.type) {
+                          @case ('IMAGE') {
+                            <img width="200" class="cursor-pointer rounded" [src]="getMediaDataUrl(message)" alt=""
+                                 style="max-width: 300px;">
+                          }
+                          @case ('VIDEO') {
+                            <video width="300" controls class="cursor-pointer rounded" style="max-width: 400px;">
+                              <source [src]="getMediaDataUrl(message)" type="video/mp4">
+                              Your browser does not support the video tag.
+                            </video>
+                          }
+                          @case ('AUDIO') {
+                            <div class="p-2 bg-white rounded">
+                              <audio controls class="cursor-pointer" style="width: 250px;">
+                                <source [src]="getMediaDataUrl(message)" type="audio/mpeg">
+                                Your browser does not support the audio tag.
+                              </audio>
+                            </div>
+                          }
+                          @case ('DOCUMENT') {
+                            <a [href]="getMediaDataUrl(message)" download="document.pdf"
+                               class="btn btn-sm btn-outline-primary d-flex align-items-center gap-2"
+                               style="width: fit-content;">
+                              <i class="fas fa-file-pdf"></i>
+                              <span>Download PDF</span>
+                            </a>
+                          }
+                        }
                       }
                       <small class="text-black-50">{{ message.createdDate | date: 'HH:mm' }}</small>
                     </div>
@@ -87,30 +136,16 @@
             <div class="gray-bg p-2">
               <div class="d-flex align-items-center gap-2">
                 <i class="fas fa-paperclip cursor-pointer" (click)="inputFile.click()"></i>
-                <input
-                  #inputFile
-                  type="file"
-                  [hidden]="true"
-                  accept=".jpg, .jpeg, .png, .svg, .mp4, .mov, .mp3, .pdf"
-                  (change)="uploadMedia($event.target)"
-                >
+                <input #inputFile type="file" [hidden]="true" accept=".jpg, .jpeg, .png, .svg, .mp4, .mov, .mp3, .pdf"
+                       (change)="uploadMedia($event.target)">
                 <i class="fa-regular fa-face-smile cursor-pointer" (click)="showEmojis = !showEmojis"></i>
                 @if (showEmojis) {
-                  <emoji-mart
-                    [set]="'google'"
-                    title="Pick your emoji.."
-                    emoji="smile"
-                    class="emojis-panel"
-                    (emojiClick)="onSelectEmojis($event)"
-                  ></emoji-mart>
+                  <emoji-mart [set]="'google'" title="Pick your emoji.." emoji="smile" class="emojis-panel"
+                              (emojiClick)="onSelectEmojis($event)"></emoji-mart>
                 }
-                <input type="text"
-                       class="form-control-sm w-100"
-                       placeholder="Type a message"
+                <input type="text" class="form-control-sm w-100" placeholder="Type a message"
                        [(ngModel)]="messageContent"
-                       (keydown)="keyDown($event)"
-                       (click)="onClick()"
-                >
+                       (keydown)="keyDown($event)" (click)="onClick()">
                 @if (messageContent) {
                   <i class="fas fa-paper-plane cursor-pointer" (click)="sendMessage()"></i>
                 } @else {

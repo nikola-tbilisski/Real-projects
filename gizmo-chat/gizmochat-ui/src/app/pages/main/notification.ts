@@ -3,8 +3,9 @@ export interface Notification {
   content?: string;
   senderId?: string;
   receiverId?: string;
-  messageType?: 'TEXT' | 'IMAGE' | 'VIDEO' | 'AUDIO';
-  type?: 'SEEN' | 'MESSAGE' | 'IMAGE' | 'VIDEO' | 'AUDIO';
+  messageId?: number;
+  messageType?: 'TEXT' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT';
+  type?: 'SEEN' | 'MESSAGE' | 'IMAGE' | 'VIDEO' | 'AUDIO' | 'DOCUMENT';
   chatName?: string;
   media?: Array<string>;
 }

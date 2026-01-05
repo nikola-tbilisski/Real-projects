@@ -51,6 +51,10 @@ export class ChatListComponent {
     return lastMessage?.substring(0, 17) + '...';
   }
 
+  get userFullName(): string {
+    return this.keycloakService.fullName || 'user';
+  }
+
   selectContact(contact: UserResponse) {
     this.chatService.createChat({
       'sender-id': this.keycloakService.userId as string,

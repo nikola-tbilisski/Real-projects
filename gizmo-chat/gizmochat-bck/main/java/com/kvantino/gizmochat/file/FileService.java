@@ -46,7 +46,7 @@ public class FileService {
         }
 
         final String fileExtension = getFileExtension(sourceFile.getOriginalFilename());
-        String targetFilePath = finalUploadPath + separator + System.currentTimeMillis() + fileExtension;
+        String targetFilePath = finalUploadPath + separator + System.currentTimeMillis() + '.' + fileExtension;
         Path targetPath = Paths.get(targetFilePath);
 
         try {
@@ -60,7 +60,7 @@ public class FileService {
         return null;
     }
 
-    private String getFileExtension(String filename) {
+    public String getFileExtension(String filename) {
         if (filename == null || filename.isEmpty())
             return "";
 
